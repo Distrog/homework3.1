@@ -5,7 +5,7 @@ import ru.hogwarts.school.model.Faculty;
 import java.util.Collection;
 
 public interface FacultyService {
-    Faculty getFaculty(long id);
+    Faculty getFaculty(Long id);
 
     Collection<Faculty> getAllFaculties();
 
@@ -13,7 +13,7 @@ public interface FacultyService {
 
     Faculty createFaculty(Faculty faculty);
 
-    Faculty deleteFaculty(long id);
+    Faculty deleteFaculty(Long id);
 
     Collection<Faculty> filterByColor(String color);
 }

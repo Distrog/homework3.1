@@ -24,14 +24,14 @@ class FacultyControllerTest {
 
     @Test
     public void shouldGetFaculty() {
-        when(serviceMock.getFaculty(1)).thenReturn(new Faculty(1, "Name1", "Color1"));
+        when(serviceMock.getFaculty(1L)).thenReturn(new Faculty(1, "Name1", "Color1"));
         assertEquals(ResponseEntity.ok(new Faculty(1, "Name1", "Color1")),
                 out.getFaculty(1L));
     }
 
     @Test
     public void shouldGetWrongFaculty() {
-        when(serviceMock.getFaculty(1)).thenReturn(null);
+        when(serviceMock.getFaculty(1L)).thenReturn(null);
         assertEquals(ResponseEntity.notFound().build(), out.getFaculty(1L));
     }
 

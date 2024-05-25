@@ -5,11 +5,11 @@ import ru.hogwarts.school.model.Student;
 import java.util.Collection;
 
 public interface StudentService {
-    Student getStudent(long id);
+    Student getStudent(Long id);
     Collection<Student> getAllStudents();
     Student editStudent(Long id,Student student);
     Student createStudent(Student student);
-    Student deleteStudent(long id);
+    Student deleteStudent(Long id);
 
     Collection<Student> filterByAge(Integer age);
 }

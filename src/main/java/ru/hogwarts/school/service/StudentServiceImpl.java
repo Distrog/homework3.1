@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 @Service
 public class StudentServiceImpl implements StudentService {
     private final Map<Long, Student> students = new HashMap<>();
-    private static long lastId = 0;
+    private static Long lastId = 0L;
 
     @Override
-    public Student getStudent(long id) {
+    public Student getStudent(Long id) {
         return students.get(id);
     }
 
@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student deleteStudent(long id) {
+    public Student deleteStudent(Long id) {
         return students.remove(id);
     }
 

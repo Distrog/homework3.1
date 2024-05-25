@@ -27,14 +27,14 @@ class StudentControllerTest {
 
     @Test
     public void shouldGetStudent() {
-        when(serviceMock.getStudent(1)).thenReturn(new Student(1, "Name1", 1));
+        when(serviceMock.getStudent(1L)).thenReturn(new Student(1, "Name1", 1));
         assertEquals(ResponseEntity.ok(new Student(1, "Name1", 1)),
                 out.getStudent(1L));
     }
 
     @Test
     public void shouldGetWrongStudent() {
-        when(serviceMock.getStudent(1)).thenReturn(null);
+        when(serviceMock.getStudent(1L)).thenReturn(null);
         assertEquals(ResponseEntity.notFound().build(), out.getStudent(1L));
     }
 
