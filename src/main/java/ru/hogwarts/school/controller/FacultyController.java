@@ -17,8 +17,8 @@ public class FacultyController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
-        return ResponseEntity.ok(facultyService.getAllFaculties());
+    public Collection<Faculty> getAllFaculties() {
+        return facultyService.getAllFaculties();
     }
 
     @GetMapping("{id}")
@@ -31,17 +31,13 @@ public class FacultyController {
     }
 
     @PostMapping
-    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
-        Faculty createdFaculty = facultyService.createFaculty(faculty);
-        if (createdFaculty == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(createdFaculty);
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.createFaculty(faculty);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Faculty> editFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
-        Faculty editedFaculty = facultyService.editFaculty(id, faculty);
+    @PutMapping
+    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
+        Faculty editedFaculty = facultyService.editFaculty(faculty);
         if (editedFaculty == null) {
             return ResponseEntity.notFound().build();
         }
@@ -49,15 +45,13 @@ public class FacultyController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
-        Faculty deletedFaculty = facultyService.getFaculty(id);
-        if (deletedFaculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(facultyService.deleteFaculty(id));
+    public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
+        return ResponseEntity.ok().build();
     }
-    @GetMapping("filter-by-color/{color}")
-    public ResponseEntity<Collection<Faculty>> filterFacultiesByColor(@PathVariable String color){
-        return ResponseEntity.ok(facultyService.filterByColor(color));
+
+    @GetMapping(params = "color")
+    public Collection<Faculty> filterFacultiesByColor(@RequestParam("color") String color) {
+        return facultyService.filterByColor(color);
     }
 }
