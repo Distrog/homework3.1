@@ -11,7 +11,8 @@ import java.util.Collection;
 @Service
 public class FacultyServiceImpl implements FacultyService {
     private final FacultyRepository faculties;
-@Autowired
+
+    @Autowired
     public FacultyServiceImpl(FacultyRepository faculties) {
         this.faculties = faculties;
     }
