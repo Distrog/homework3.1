@@ -54,4 +54,10 @@ public class StudentController {
     public Collection<Student> filterStudentsByAge(@RequestParam("age") Integer age) {
         return studentService.filterByAge(age);
     }
+
+    @GetMapping(params={"minAge", "maxAge"})
+    public Collection<Student> findByAgeBetween(@RequestParam Integer minAge,
+                                                @RequestParam Integer maxAge){
+        return studentService.findByAgeBetween(minAge,maxAge);
+    }
 }
