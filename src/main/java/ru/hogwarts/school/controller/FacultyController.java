@@ -16,11 +16,6 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping
-    public Collection<Faculty> getAllFaculties() {
-        return facultyService.getAllFaculties();
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
         Faculty foundedFaculty = facultyService.getFaculty(id);
@@ -50,8 +45,17 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(params = "color")
-    public Collection<Faculty> filterFacultiesByColor(@RequestParam("color") String color) {
-        return facultyService.filterByColor(color);
+    @GetMapping
+    public Collection<Faculty> findByNameOrColor(@RequestParam(required = false) String name,
+                                                 @RequestParam(required = false) String color) {
+        if (name == null && color == null) {
+            return facultyService.getAllFaculties();
+        } else if (name == null) {
+            return facultyService.findByColor(color);
+        } else if (color == null) {
+            return facultyService.findByName(name);
+        } else {
+            return facultyService.findByNameOrColor(name, color);
+        }
     }
 }
