@@ -17,8 +17,8 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public Collection<Student> getAllStudents() {
+        return studentService.getAllStudents();
     }
 
     @GetMapping("{id}")
@@ -31,17 +31,13 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student createdStudent = studentService.createStudent(student);
-        if (createdStudent == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(createdStudent);
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Student> editStudent(@PathVariable Long id, @RequestBody Student student) {
-        Student editedStudent = studentService.editStudent(id, student);
+    @PutMapping
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+        Student editedStudent = studentService.editStudent(student);
         if (editedStudent == null) {
             return ResponseEntity.notFound().build();
         }
@@ -49,16 +45,13 @@ public class StudentController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
-        Student deletedStudent = studentService.getStudent(id);
-        if (deletedStudent == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(studentService.deleteStudent(id));
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    studentService.deleteStudent(id);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("filter-by-age/{age}")
-    public ResponseEntity<Collection<Student>> filterStudentsByAge(@PathVariable Integer age){
-        return ResponseEntity.ok(studentService.filterByAge(age));
+    @GetMapping(params = "age")
+    public Collection<Student> filterStudentsByAge(@RequestParam("age") Integer age) {
+        return studentService.filterByAge(age);
     }
 }

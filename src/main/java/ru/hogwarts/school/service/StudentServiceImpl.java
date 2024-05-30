@@ -1,48 +1,49 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private static Long lastId = 0L;
+    private final StudentRepository students;
+
+    @Autowired
+    public StudentServiceImpl(StudentRepository students) {
+        this.students = students;
+    }
 
     @Override
     public Student getStudent(Long id) {
-        return students.get(id);
+        return students.findById(id).get();
     }
 
     @Override
     public Collection<Student> getAllStudents() {
-        return Collections.unmodifiableCollection(students.values());
+        return students.findAll();
     }
 
     @Override
-    public Student editStudent(Long id, Student student) {
-        Student editedStudent = students.get(id);
-        return students.put(editedStudent.getId(),
-                new Student(editedStudent.getId(), student.getName(), student.getAge()));
+    public Student editStudent(Student student) {
+        return students.save(student);
     }
 
     @Override
     public Student createStudent(Student student) {
-        Student createdStudent = new Student(++lastId, student.getName(), student.getAge());
-        students.put(lastId, createdStudent);
-        return createdStudent;
+        return students.save(student);
     }
 
     @Override
-    public Student deleteStudent(Long id) {
-        return students.remove(id);
+    public void deleteStudent(Long id) {
+        students.deleteById(id);
     }
 
     @Override
     public Collection<Student> filterByAge(Integer age) {
-        return Collections.unmodifiableCollection(
-                students.values().stream().filter(e-> Objects.equals(e.getAge(),age)).toList());
+        return students.findByAge(age);
     }
 }

@@ -1,51 +1,49 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
-    private final Map<Long, Faculty> faculties = new HashMap<>();
-    private static Long lastId = 0L;
+    private final FacultyRepository faculties;
+
+    @Autowired
+    public FacultyServiceImpl(FacultyRepository faculties) {
+        this.faculties = faculties;
+    }
 
     @Override
     public Faculty getFaculty(Long id) {
-        return faculties.get(id);
+        return faculties.findById(id).get();
     }
 
     @Override
     public Collection<Faculty> getAllFaculties() {
-        return Collections.unmodifiableCollection(faculties.values());
+        return faculties.findAll();
     }
 
     @Override
-    public Faculty editFaculty(Long id, Faculty faculty) {
-        Faculty editedFaculty = faculties.get(id);
-        return faculties.put(editedFaculty.getId(),
-                new Faculty(editedFaculty.getId(), faculty.getName(), faculty.getColor()));
+    public Faculty editFaculty(Faculty faculty) {
+        return faculties.save(faculty);
     }
 
     @Override
     public Faculty createFaculty(Faculty faculty) {
-        Faculty createdFaculty = new Faculty(++lastId, faculty.getName(), faculty.getColor());
-        faculties.put(lastId, createdFaculty);
-        return createdFaculty;
+        return faculties.save(faculty);
     }
 
     @Override
-    public Faculty deleteFaculty(Long id) {
-        return faculties.remove(id);
+    public void deleteFaculty(Long id) {
+        faculties.deleteById(id);
     }
 
     @Override
     public Collection<Faculty> filterByColor(String color) {
-        return Collections.unmodifiableCollection(
-                faculties.values().stream().filter(e->e.getColor().equals(color)).toList());
+        return faculties.findByColorLike(color);
     }
 }
