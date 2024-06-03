@@ -13,9 +13,21 @@ public class Avatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+    @Lob
     private byte[] data;
     @OneToOne
     private Student student;
+
+    public Avatar() {
+    }
+
+    public Avatar(long id, String filePath, long fileSize, String mediaType, Student student) {
+        this.id = id;
+        this.filePath = filePath;
+        this.fileSize = fileSize;
+        this.mediaType = mediaType;
+        this.student = student;
+    }
 
     public long getId() {
         return id;
