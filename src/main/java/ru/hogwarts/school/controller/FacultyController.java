@@ -13,7 +13,7 @@ import java.util.Collection;
 public class FacultyController {
     private final FacultyService facultyService;
 
-    public FacultyController(@RequestBody FacultyService facultyService) {
+    public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
