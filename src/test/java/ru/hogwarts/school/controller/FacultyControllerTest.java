@@ -85,7 +85,11 @@ class FacultyControllerTest {
     public void deleteFaculty() throws Exception {
         Long id = facultyController.getAllFaculty().stream()
                 .filter(e -> e.getName().equals("test2"))
-                .map(e -> e.getId()).max(Long::compareTo).get();
+                .map(e -> e.getId()).max(Long::compareTo).orElseGet(()->{
+                    Faculty faculty = new Faculty();
+                    facultyController.createFaculty(faculty);
+                    return faculty.getId();
+                });
 
         this.restTemplate.delete("http://localhost:" + port + "/faculties/" + id);
     }

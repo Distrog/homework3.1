@@ -84,7 +84,12 @@ class StudentControllerTest {
     public void deleteStudent() throws Exception {
         Long id = studentController.getAllStudents().stream()
                 .filter(e -> e.getName().equals("Test2"))
-                .map(e -> e.getId()).max(Long::compareTo).get();
+                .map(e -> e.getId()).max(Long::compareTo)
+                .orElseGet(()->{
+                    Student student = new Student();
+                    studentController.createStudent(student);
+                    return student.getId();
+                });
 
         this.restTemplate.delete("http://localhost:" + port + "/students/" + id);
     }
