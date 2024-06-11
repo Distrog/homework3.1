@@ -11,7 +11,7 @@ import ru.hogwarts.school.model.Student;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentControllerTest {
@@ -40,8 +40,10 @@ class StudentControllerTest {
 
     @Test
     public void getStudent() throws Exception {
+        Long id = studentController.getAllStudents().stream()
+                        .map(e->e.getId()).min(Long::compareTo).get();
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/students/1",
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/students/"+id,
                         String.class))
                 .isNotNull();
     }
