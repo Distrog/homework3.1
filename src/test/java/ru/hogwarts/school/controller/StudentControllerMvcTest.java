@@ -13,12 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.AvatarRepository;
-import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.AvatarServiceImpl;
-import ru.hogwarts.school.service.FacultyServiceImpl;
-import ru.hogwarts.school.service.StudentServiceImpl;
+import ru.hogwarts.school.service.StudentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +25,7 @@ import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@WebMvcTest
+@WebMvcTest(StudentController.class)
 class StudentControllerMvcTest {
 
     @Autowired
@@ -38,20 +33,8 @@ class StudentControllerMvcTest {
     @MockBean
     private StudentRepository studentRepository;
 
-    @MockBean
-    private AvatarRepository avatarRepository;
-
-    @MockBean
-    private FacultyRepository facultyRepository;
-
     @SpyBean
-    private StudentServiceImpl studentService;
-
-    @SpyBean
-    private AvatarServiceImpl avatarService;
-
-    @SpyBean
-    private FacultyServiceImpl facultyService;
+    private StudentService studentService;
 
     @InjectMocks
     private StudentController studentController;
@@ -202,6 +185,7 @@ class StudentControllerMvcTest {
         student1.setName("student1");
         student1.setAge(11);
 
+        students.add(student1);
         JSONArray studentObjects = new JSONArray();
         studentObjects.put(new JSONObject().put("id", 1L).put("name", "student1").put("age", 11));
 
@@ -214,7 +198,8 @@ class StudentControllerMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .equals("[{\"id\":1,\"name\":\"student1\",\"age\":11}]");
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[{\"id\":1,\"name\":\"student1\",\"age\":11,\"faculty\":null}]"));
     }
 
     @Test
@@ -227,9 +212,9 @@ class StudentControllerMvcTest {
         student1.setAge(11);
 
         Student student2 = new Student();
-        student1.setId(2L);
-        student1.setName("student2");
-        student1.setAge(22);
+        student2.setId(2L);
+        student2.setName("student2");
+        student2.setAge(22);
         students.add(student1);
         students.add(student2);
 
@@ -248,7 +233,8 @@ class StudentControllerMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .equals("[{\"id\":1,\"name\":\"student1\",\"age\":11}," +
-                        "{\"id\":2,\"name\":\"student2\",\"age\":22}]");
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[{\"id\":1,\"name\":\"student1\",\"age\":11,\"faculty\":null}," +
+                        "{\"id\":2,\"name\":\"student2\",\"age\":22,\"faculty\":null}]"));
     }
 }
