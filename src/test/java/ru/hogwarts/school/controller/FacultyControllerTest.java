@@ -85,24 +85,27 @@ class FacultyControllerTest {
 //    public void getAllStudents() throws Exception {
 //        List<Student> students = new ArrayList<>();
 //
+//        Faculty faculty = new Faculty();
+//        faculty.setName("faculty");
+//        faculty.setColor("red");
+//        facultyRepository.save(faculty);
+//
 //        Student student1 = new Student();
 //        student1.setName("student1");
 //        student1.setAge(11);
+//        student1.setFaculty(faculty);
 //        studentRepository.save(student1);
 //
 //        Student student2 = new Student();
 //        student2.setName("student2");
 //        student2.setAge(22);
+//        student2.setFaculty(faculty);
 //        studentRepository.save(student2);
 //
 //        students.add(student1);
 //        students.add(student2);
 //
-//        Faculty faculty = new Faculty();
-//        faculty.setName("faculty");
-//        faculty.setColor("red");
-//        faculty.setStudents(students);
-//        facultyRepository.save(faculty);
+//
 //
 //        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/faculties/"
 //                +faculty.getId()+"/students", Student[].class);

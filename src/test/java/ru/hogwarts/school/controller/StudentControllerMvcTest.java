@@ -15,6 +15,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
+import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ class StudentControllerMvcTest {
     private StudentRepository studentRepository;
 
     @SpyBean
-    private StudentService studentService;
+    private StudentServiceImpl studentService;
 
     @InjectMocks
     private StudentController studentController;
