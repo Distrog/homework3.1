@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -99,8 +100,8 @@ class FacultyControllerTest {
         students.add(student1);
         students.add(student2);
 
-        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/faculties/"
-                +faculty.getId()+"/students", Student[].class);
+        Student[] actual = this.restTemplate.getForObject("http://localhost:" + port + "/faculties/"
+                + faculty.getId() + "/students", Student[].class);
 
         Assertions.assertThat(actual.length).isEqualTo(2);
         Assertions.assertThat(actual[0]).isEqualTo(student1);
@@ -170,9 +171,11 @@ class FacultyControllerTest {
         faculty1.setColor("yellow");
         facultyRepository.save(faculty3);
 
+        String uri = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port
+                        + "/faculties").queryParam("name", "test1")
+                .queryParam("color", "red").toUriString();
 
-        Faculty[] actual = this.restTemplate.getForObject("http://localhost:" + port
-                + "/faculties?name=test1&color=red", Faculty[].class);
+        Faculty[] actual = this.restTemplate.getForObject(uri, Faculty[].class);
 
         Assertions.assertThat(actual.length).isEqualTo(1);
         Assertions.assertThat(actual[0].getName()).isEqualTo("test1");

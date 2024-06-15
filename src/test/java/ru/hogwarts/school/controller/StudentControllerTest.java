@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -160,8 +161,9 @@ class StudentControllerTest {
         this.restTemplate.postForEntity("http://localhost:" + port + "/students",createdStudent3,
                 Student.class);
 
-        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/students?age=44",
-                Student[].class);
+        String uri = UriComponentsBuilder.fromHttpUrl("http://localhost:"+port+"/students")
+                .queryParam("age",44).toUriString();
+        Student[] actual = this.restTemplate.getForObject(uri, Student[].class);
 
         Assertions.assertThat(actual.length).isEqualTo(1);
         Assertions.assertThat(actual[0].getName()).isEqualTo("Test");
@@ -190,8 +192,10 @@ class StudentControllerTest {
         this.restTemplate.postForEntity("http://localhost:" + port + "/students",createdStudent3,
                 Student.class);
 
-        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/students?minAge=44&maxAge=55",
-                        Student[].class);
+        String uri = UriComponentsBuilder.fromHttpUrl("http://localhost:"+port+"/students?minAge=44&maxAge=55")
+                .queryParam("minAge",44).queryParam("maxAge",55).toUriString();
+
+        Student[] actual = this.restTemplate.getForObject(uri, Student[].class);
 
         Assertions.assertThat(actual.length).isEqualTo(2);
         Assertions.assertThat(actual[0].getAge()).isEqualTo(44);
