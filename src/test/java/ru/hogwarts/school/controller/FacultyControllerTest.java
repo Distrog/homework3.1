@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,18 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FacultyControllerTest {
@@ -81,40 +75,37 @@ class FacultyControllerTest {
         Assertions.assertThat(actual).isEqualTo(faculty);
     }
 
-//    @Test
-//    public void getAllStudents() throws Exception {
-//        List<Student> students = new ArrayList<>();
-//
-//        Faculty faculty = new Faculty();
-//        faculty.setName("faculty");
-//        faculty.setColor("red");
-//        facultyRepository.save(faculty);
-//
-//        Student student1 = new Student();
-//        student1.setName("student1");
-//        student1.setAge(11);
-//        student1.setFaculty(faculty);
-//        studentRepository.save(student1);
-//
-//        Student student2 = new Student();
-//        student2.setName("student2");
-//        student2.setAge(22);
-//        student2.setFaculty(faculty);
-//        studentRepository.save(student2);
-//
-//        students.add(student1);
-//        students.add(student2);
-//
-//
-//
-//        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/faculties/"
-//                +faculty.getId()+"/students", Student[].class);
-//
-//
-//        Assertions.assertThat(actual.length).isEqualTo(2);
-//        Assertions.assertThat(actual[0]).isEqualTo(student1);
-//        Assertions.assertThat(actual[1]).isEqualTo(student2);
-//    }
+    @Test
+    public void getAllStudents() throws Exception {
+        List<Student> students = new ArrayList<>();
+
+        Faculty faculty = new Faculty();
+        faculty.setName("faculty");
+        faculty.setColor("red");
+        facultyRepository.save(faculty);
+
+        Student student1 = new Student();
+        student1.setName("student1");
+        student1.setAge(11);
+        student1.setFaculty(faculty);
+        studentRepository.save(student1);
+
+        Student student2 = new Student();
+        student2.setName("student2");
+        student2.setAge(22);
+        student2.setFaculty(faculty);
+        studentRepository.save(student2);
+
+        students.add(student1);
+        students.add(student2);
+
+        Student[] actual = this.restTemplate.getForObject("http://localhost:"+port+"/faculties/"
+                +faculty.getId()+"/students", Student[].class);
+
+        Assertions.assertThat(actual.length).isEqualTo(2);
+        Assertions.assertThat(actual[0]).isEqualTo(student1);
+        Assertions.assertThat(actual[1]).isEqualTo(student2);
+    }
 
     @Test
     public void createFaculty() throws Exception {

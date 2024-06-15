@@ -1,7 +1,6 @@
 package ru.hogwarts.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +14,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.StudentService;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.ArrayList;
@@ -60,17 +58,10 @@ class StudentControllerMvcTest {
         students.add(student1);
         students.add(student2);
 
-        JSONArray studentObjects = new JSONArray();
-        studentObjects.put(new JSONObject().put("id", 1L).put("name", "student1").put("age", 11));
-        studentObjects.put(new JSONObject().put("id", 2L).put("name", "student2").put("age", 22));
-
         when(studentRepository.findAll()).thenReturn(students);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/students")
-                        .content(studentObjects.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/students"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1,student2))));
     }
@@ -88,10 +79,7 @@ class StudentControllerMvcTest {
         when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/students/1")
-                        .content(studentJSON.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/students/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("student1"))
@@ -111,19 +99,11 @@ class StudentControllerMvcTest {
         student.setAge(11);
         student.setFaculty(faculty);
 
-        JSONObject facultyObject = new JSONObject();
-        facultyObject.put("id", 1L);
-        facultyObject.put("name", "faculty1");
-        facultyObject.put("color", "red");
-
         when(studentRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(student));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/students/1/faculty")
-                        .content(facultyObject.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/students/1/faculty"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("faculty1"))
@@ -192,17 +172,12 @@ class StudentControllerMvcTest {
         student1.setAge(11);
 
         students.add(student1);
-        JSONArray studentObjects = new JSONArray();
-        studentObjects.put(new JSONObject().put("id", 1L).put("name", "student1").put("age", 11));
 
         when(studentRepository.findByAge(any(Integer.class))).thenReturn(students);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/students")
-                        .param("age", "11")
-                        .content(studentObjects.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .param("age", "11"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1))));
@@ -224,20 +199,13 @@ class StudentControllerMvcTest {
         students.add(student1);
         students.add(student2);
 
-        JSONArray studentObjects = new JSONArray();
-        studentObjects.put(new JSONObject().put("id", 1L).put("name", "student1").put("age", 11));
-        studentObjects.put(new JSONObject().put("id", 2L).put("name", "student2").put("age", 22));
-
         when(studentRepository.findByAgeBetween(any(Integer.class), any(Integer.class)))
                 .thenReturn(students);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/students")
                         .param("minAge", "10")
-                        .param("maxAge", "23")
-                        .content(studentObjects.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .param("maxAge", "23"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1,student2))));

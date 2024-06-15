@@ -1,7 +1,6 @@
 package ru.hogwarts.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +23,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -58,17 +58,10 @@ class FacultyControllerMvcTest {
         faculties.add(faculty1);
         faculties.add(faculty2);
 
-        JSONArray facultyObject = new JSONArray();
-        facultyObject.put(new JSONObject().put("id", 1L).put("name", "faculty1").put("color", "red"));
-        facultyObject.put(new JSONObject().put("id", 2L).put("name", "faculty2").put("color", "yellow"));
-
         when(facultyRepository.findAll()).thenReturn(faculties);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculties")
-                        .content(facultyObject.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/faculties"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(faculty1,faculty2))));
     }
@@ -86,10 +79,7 @@ class FacultyControllerMvcTest {
         when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(faculty));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculties/1")
-                        .content(studentJSON.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/faculties/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("faculty1"))
@@ -110,19 +100,19 @@ class FacultyControllerMvcTest {
         student.setFaculty(faculty);
 
         faculty.setStudents(new ArrayList<>(List.of(student)));
-        JSONArray studentsObject = new JSONArray();
 
-        studentsObject.put(new JSONObject().put("id", 1L).put("name", "faculty1").put("color", "red").put("faculty_id",1L));
 
         when(facultyRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(faculty));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculties/1/students")
-                        .content(studentsObject.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .get("/faculties/1/students"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("student1"))
+                .andExpect(jsonPath("$[0].age").value(11));
     }
 
     @Test
@@ -194,20 +184,13 @@ class FacultyControllerMvcTest {
         faculties.add(faculty1);
         faculties.add(faculty2);
 
-        JSONArray facultyObjects = new JSONArray();
-        facultyObjects.put(new JSONObject().put("id", 1L).put("name", "faculty1").put("color", "red"));
-        facultyObjects.put(new JSONObject().put("id", 2L).put("name", "faculty1").put("color", "red"));
-
         when(facultyRepository.findByNameIgnoreCaseAndColorIgnoreCase(any(String.class), any(String.class)))
                 .thenReturn(faculties);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculties")
                         .param("color", "red")
-                        .param("name", "faculty1")
-                        .content(facultyObjects.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .param("name", "faculty1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1L))

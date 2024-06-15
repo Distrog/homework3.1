@@ -69,7 +69,7 @@ class StudentControllerTest {
                 .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/students/1",
                         String.class))
                 .isNotNull()
-                .isEqualTo("{\"id\":1,\"name\":\"student\",\"age\":11,\"faculty\":null}");
+                .isEqualTo("{\"id\":1,\"name\":\"student\",\"age\":11}");
     }
 
     @Test
