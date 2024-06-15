@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import ru.hogwarts.school.service.StudentService;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,8 @@ class StudentControllerMvcTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
     @MockBean
     private StudentRepository studentRepository;
 
@@ -67,7 +71,8 @@ class StudentControllerMvcTest {
                         .content(studentObjects.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1,student2))));
     }
 
     @Test
@@ -200,7 +205,7 @@ class StudentControllerMvcTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[{\"id\":1,\"name\":\"student1\",\"age\":11,\"faculty\":null}]"));
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1))));
     }
 
     @Test
@@ -235,7 +240,6 @@ class StudentControllerMvcTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[{\"id\":1,\"name\":\"student1\",\"age\":11,\"faculty\":null}," +
-                        "{\"id\":2,\"name\":\"student2\",\"age\":22,\"faculty\":null}]"));
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1,student2))));
     }
 }

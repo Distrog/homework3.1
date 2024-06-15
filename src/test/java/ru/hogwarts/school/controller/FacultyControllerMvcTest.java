@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -14,14 +15,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
-import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.FacultyServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FacultyControllerMvcTest {
     @Autowired
     MockMvc mockMvc;
-
+    @Autowired
+    ObjectMapper objectMapper;
     @MockBean
     FacultyRepository facultyRepository;
 
@@ -69,8 +70,7 @@ class FacultyControllerMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":1,\"name\":\"faculty1\",\"color\":\"red\"}," +
-                        "{\"id\":2,\"name\":\"faculty2\",\"color\":\"yellow\"}]"));
+                .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(faculty1,faculty2))));
     }
 
     @Test
@@ -112,7 +112,7 @@ class FacultyControllerMvcTest {
         faculty.setStudents(new ArrayList<>(List.of(student)));
         JSONArray studentsObject = new JSONArray();
 
-        studentsObject.put(new JSONObject().put("id",1L).put("name","faculty1").put("color","red"));
+        studentsObject.put(new JSONObject().put("id", 1L).put("name", "faculty1").put("color", "red").put("faculty_id",1L));
 
         when(facultyRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(faculty));
@@ -188,7 +188,7 @@ class FacultyControllerMvcTest {
 
         Faculty faculty2 = new Faculty();
         faculty2.setId(2L);
-        faculty2.setName("faculty2");
+        faculty2.setName("faculty1");
         faculty2.setColor("red");
 
         faculties.add(faculty1);
@@ -196,21 +196,25 @@ class FacultyControllerMvcTest {
 
         JSONArray facultyObjects = new JSONArray();
         facultyObjects.put(new JSONObject().put("id", 1L).put("name", "faculty1").put("color", "red"));
-        facultyObjects.put(new JSONObject().put("id", 2L).put("name", "faculty2").put("color", "red"));
+        facultyObjects.put(new JSONObject().put("id", 2L).put("name", "faculty1").put("color", "red"));
 
-        when(facultyRepository.findByNameIgnoreCaseAndColorIgnoreCase(any(String.class),any(String.class)))
+        when(facultyRepository.findByNameIgnoreCaseAndColorIgnoreCase(any(String.class), any(String.class)))
                 .thenReturn(faculties);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculties")
                         .param("color", "red")
-                        .param("name","faculty1")
+                        .param("name", "faculty1")
                         .content(facultyObjects.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[{\"id\":1,\"name\":\"faculty1\",\"color\":\"red\"}," +
-                        "{\"id\":2,\"name\":\"faculty2\",\"color\":\"red\"}]"));
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("faculty1"))
+                .andExpect(jsonPath("$[0].color").value("red"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].name").value("faculty1"))
+                .andExpect(jsonPath("$[1].color").value("red"));
     }
 }
