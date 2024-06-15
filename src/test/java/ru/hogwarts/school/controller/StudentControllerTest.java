@@ -54,8 +54,7 @@ class StudentControllerTest {
                 .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/students",
                         Student[].class))
                 .isNotNull()
-                .contains(student1)
-        ;
+                .contains(student1);
     }
 
     @Test
