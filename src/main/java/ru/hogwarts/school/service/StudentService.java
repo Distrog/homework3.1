@@ -19,4 +19,6 @@ public interface StudentService {
     Faculty getFaculty(Long id);
 
     Integer getCountOfStudents();
+
+    Integer getAverageAgeOfStudents();
 }
