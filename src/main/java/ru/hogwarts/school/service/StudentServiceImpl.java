@@ -57,4 +57,9 @@ public class StudentServiceImpl implements StudentService {
     public Faculty getFaculty(Long id) {
         return students.findById(id).orElseThrow().getFaculty();
     }
+
+    @Override
+    public Integer getCountOfStudents() {
+        return students.getCountOfStudents();
+    }
 }

@@ -66,4 +66,9 @@ public class StudentController {
                                                 @RequestParam Integer maxAge){
         return studentService.findByAgeBetween(minAge,maxAge);
     }
+
+    @GetMapping("count")
+    public Integer getCountOfStudents(){
+        return studentService.getCountOfStudents();
+    }
 }
