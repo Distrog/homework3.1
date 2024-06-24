@@ -67,4 +67,9 @@ public class StudentServiceImpl implements StudentService {
     public Integer getAverageAgeOfStudents() {
         return students.getAverageAgeOfStudents();
     }
+
+    @Override
+    public Collection<Student> getFiveLastStudents() {
+        return students.getFiveLastStudents();
+    }
 }

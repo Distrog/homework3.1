@@ -21,4 +21,6 @@ public interface StudentService {
     Integer getCountOfStudents();
 
     Integer getAverageAgeOfStudents();
+
+    Collection<Student> getFiveLastStudents();
 }
