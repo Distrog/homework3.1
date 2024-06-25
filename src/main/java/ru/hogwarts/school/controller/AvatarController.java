@@ -59,9 +59,9 @@ public class AvatarController {
     @GetMapping("allAvatars")
     public ResponseEntity<Collection<AvatarDTO>> getAllAvatars(@RequestParam Integer pageNumber,
                                                                @RequestParam Integer pageSize) {
-        Collection<Avatar> avatars = avatarService.getAllAvatars(pageNumber,pageSize);
-       Collection<AvatarDTO> avatarDTOS = avatars.stream().map(avatar ->
-               AvatarDTO.convertAvatarToDTO(avatar)).collect(Collectors.toList());
-       return ResponseEntity.ok(avatarDTOS);
+        Collection<Avatar> avatars = avatarService.getAllAvatars(pageNumber, pageSize);
+        Collection<AvatarDTO> avatarDTOS = avatars.stream().map(avatar ->
+                AvatarDTO.convertAvatarToDTO(avatar)).collect(Collectors.toList());
+        return ResponseEntity.ok(avatarDTOS);
     }
 }
