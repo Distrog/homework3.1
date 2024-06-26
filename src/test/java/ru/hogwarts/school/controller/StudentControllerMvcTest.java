@@ -16,10 +16,8 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -209,5 +207,121 @@ class StudentControllerMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(Arrays.asList(student1,student2))));
+    }
+    @Test
+    public void getCountOfStudents() throws Exception{
+        List<Student> students = new ArrayList<>();
+
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setName("student1");
+        student1.setAge(11);
+
+        Student student2 = new Student();
+        student2.setId(2L);
+        student2.setName("student2");
+        student2.setAge(22);
+
+        Student student3 = new Student();
+        student2.setId(3L);
+        student2.setName("student3");
+        student2.setAge(33);
+
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+
+        when(studentRepository.getCountOfStudents()).thenReturn(3);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(students.size())));
+    }
+
+
+    @Test
+    public void getAverageAgeOfStudents() throws Exception{
+        List<Student> students = new ArrayList<>();
+
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setName("student1");
+        student1.setAge(11);
+
+        Student student2 = new Student();
+        student2.setId(2L);
+        student2.setName("student2");
+        student2.setAge(22);
+
+        Student student3 = new Student();
+        student2.setId(3L);
+        student2.setName("student3");
+        student2.setAge(33);
+
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+
+        Integer averageAge = ((int) students.stream().mapToInt(student ->
+                student.getAge()).average().getAsDouble());
+
+        when(studentRepository.getAverageAgeOfStudents()).thenReturn(averageAge);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/avgAge"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(averageAge)));
+    }
+
+    @Test
+    public void getFiveLastStudent() throws Exception{
+        List<Student> students = new ArrayList<>();
+
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setName("student1");
+        student1.setAge(11);
+
+        Student student2 = new Student();
+        student2.setId(2L);
+        student2.setName("student2");
+        student2.setAge(22);
+
+        Student student3 = new Student();
+        student2.setId(3L);
+        student2.setName("student3");
+        student2.setAge(33);
+
+        Student student4 = new Student();
+        student1.setId(4L);
+        student1.setName("student4");
+        student1.setAge(44);
+
+        Student student5 = new Student();
+        student2.setId(25L);
+        student2.setName("student5");
+        student2.setAge(55);
+
+        Student student6 = new Student();
+        student2.setId(6L);
+        student2.setName("student6");
+        student2.setAge(66);
+
+        students.add(student6);
+        students.add(student5);
+        students.add(student4);
+        students.add(student3);
+        students.add(student2);
+
+        when(studentRepository.getFiveLastStudents()).thenReturn(List.of(student6,student5,student4,student3,student2));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/students/get-five-last-students"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(students)));
     }
 }
