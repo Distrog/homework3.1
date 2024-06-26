@@ -12,14 +12,14 @@ alter table student alter age set default 20;
 --шаг 2
 create table cars(
 id serial primary key,
-mark varchar(20),
-model varchar(20),
-price numeric(10,2)
+mark varchar(20) not null,
+model varchar(20) not null,
+price numeric(10,2) not null
 );
 create table persons(
-name text primary key,
-age integer,
-has_car_license boolean,
+name text primary key not null,
+age integer not null,
+has_car_license boolean not null,
 car_id integer references cars(id)
 );
 
