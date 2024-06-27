@@ -29,7 +29,7 @@ inner join faculty on student.faculty_id=faculty.id;
 
 select student.name, student.age, faculty.name, faculty.color  from student
 join avatar on student.id=avatar.student_id
-join faculty on student.faculty_id=faculty.id
+join faculty on student.faculty_id=faculty.id;
 
 
 
