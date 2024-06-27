@@ -25,11 +25,11 @@ car_id integer references cars(id)
 
 --шаг3
 select student.name, student.age, faculty.name from student
-inner join faculty on student.faculty_id=faculty.id;
+left join faculty on student.faculty_id=faculty.id;
 
 select student.name, student.age, faculty.name, faculty.color  from student
-join avatar on student.id=avatar.student_id
-join faculty on student.faculty_id=faculty.id;
+inner join avatar on student.id=avatar.student_id
+inner join faculty on student.faculty_id=faculty.id;
 
 
 
